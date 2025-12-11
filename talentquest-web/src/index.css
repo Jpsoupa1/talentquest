@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar bonita para a área de código */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0f172a; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #334155; 
+  border-radius: 4px;
+}

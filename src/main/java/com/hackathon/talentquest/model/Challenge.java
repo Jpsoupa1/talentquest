@@ -1,10 +1,8 @@
 package com.hackathon.talentquest.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tb_challenges")
+@Table(name = "challenges")
 @Data
 @Builder
 @NoArgsConstructor
@@ -29,16 +27,14 @@ public class Challenge {
     private Long id;
 
     private String title;
-
-    @Column(columnDefinition = "TEXT")
     private String problemStatement;
-
-
     private String inputSample;
     private String outputExpected;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // --- ESTA PARTE É A MAIS IMPORTANTE ---
+    @ManyToOne
     @JoinColumn(name = "job_id")
-    @JsonIgnoreProperties("challenges")
-    private JobPosition jobPosition;
+    @JsonIgnore // Evita loop infinito ao buscar Vaga -> Desafios
+    private JobPosition jobPosition; // O nome TEM que ser jobPosition
+    // --------------------------------------
 }

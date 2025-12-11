@@ -5,21 +5,26 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.hackathon.talentquest.model.JobPosition;
-import com.hackathon.talentquest.model.User;
+import com.hackathon.talentquest.model.Student;
 
 @Service
 public class MatchingService {
 
     /**
-     * Calcula o "Fit Cultural" (0 a 100%) baseado na distância entre 
-     * o que o aluno tem e o que a vaga pede.
+     * Calcula o "Fit Cultural/Técnico" entre um ESTUDANTE e uma Vaga.
+     * Retorna 0.0 a 100.0.
      */
-    public double calculateCulturalMatch(User student, JobPosition job) {
+    public double calculateMatch(Student student, JobPosition job) {
         Map<String, Integer> requiredSkills = job.getRequiredProfile();
-        Map<String, Integer> studentSkills = student.getSkillsProfile();
+        // Agora pegamos do objeto Student específico
+        Map<String, Integer> studentSkills = student.getSkillsProfile(); 
 
         if (requiredSkills == null || requiredSkills.isEmpty()) {
-            return 100.0; // Se a vaga não exige nada, qualquer um serve
+            return 100.0; 
+        }
+
+        if (studentSkills == null) {
+            return 0.0;
         }
 
         double totalGap = 0.0;
@@ -29,14 +34,11 @@ public class MatchingService {
             String skillName = req.getKey();
             Integer targetLevel = req.getValue();
             
-            // Se o aluno não tem a skill, consideramos nível 0
             Integer studentLevel = studentSkills.getOrDefault(skillName, 0);
 
-            // Calculamos o 'Gap' (Distância)
-            // Ex: Vaga pede 5, Aluno tem 3 -> Gap de 2
             double gap = Math.abs(targetLevel - studentLevel);
             
-            // Limitamos o gap máximo a 10 para não distorcer a média
+            // Penalização máxima de gap = 10
             if (gap > 10) gap = 10;
 
             totalGap += gap;
@@ -45,11 +47,11 @@ public class MatchingService {
 
         if (criteriaCount == 0) return 100.0;
 
-        // Média de distância
         double averageGap = totalGap / criteriaCount;
 
+        // Fórmula: 100 - (Gap Médio * 10)
         double score = 100.0 - (averageGap * 10.0);
 
-        return Math.max(0.0, score); // Nunca retorna negativo
+        return Math.max(0.0, score);
     }
 }

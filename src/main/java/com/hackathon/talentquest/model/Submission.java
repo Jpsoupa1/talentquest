@@ -23,7 +23,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tb_submissions")
+@Table(name = "submissions")
 @Data
 @Builder
 @NoArgsConstructor
@@ -40,16 +40,18 @@ public class Submission {
     @Enumerated(EnumType.STRING)
     private SubmissionStatus status;
 
-    private Double score; 
+    private Double score;
 
     @CreationTimestamp
     private LocalDateTime submittedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // REFATORADO: Agora aponta especificamente para Student
+    // Isso garante que apenas Estudantes possam ter submissões
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_id")
-    private User student;
+    private Student student;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 }
